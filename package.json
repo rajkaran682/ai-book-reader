@@ -1,1 +1,13 @@
-
+{
+  "name": "ai-book-reader",
+  "version": "1.0.0",
+  "description": "AI Book Reader - Scan or upload books, translate and listen in your preferred language",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^2.0.2"
+  }
+}
