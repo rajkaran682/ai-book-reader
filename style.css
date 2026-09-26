@@ -1,1 +1,411 @@
+* {
+  box-sizing: border-box;
+}
 
+body {
+  margin: 0;
+  font-family:
+    Arial,
+    "Noto Sans Devanagari",
+    sans-serif;
+
+  background: #f5f7fb;
+  color: #172033;
+}
+
+
+/* -------------------------
+   TOP BAR
+------------------------- */
+
+.topbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 16px 20px;
+}
+
+.brand {
+  max-width: 1100px;
+  margin: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  font-size: 38px;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 23px;
+}
+
+.brand p {
+  margin: 3px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+
+/* -------------------------
+   MAIN
+------------------------- */
+
+.container {
+  width: min(1100px, 94%);
+  margin: auto;
+}
+
+
+/* -------------------------
+   HERO
+------------------------- */
+
+.hero {
+  text-align: center;
+  padding: 45px 15px 30px;
+}
+
+.hero-icon {
+  font-size: 58px;
+}
+
+.hero h2 {
+  font-size: 31px;
+  margin: 15px 0 10px;
+}
+
+.hero p {
+  max-width: 720px;
+  margin: auto;
+
+  color: #667085;
+  line-height: 1.7;
+}
+
+
+/* -------------------------
+   INPUT SECTION
+------------------------- */
+
+.input-section,
+.language-section,
+.processing,
+.result,
+.features {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+
+  padding: 25px;
+  margin-bottom: 22px;
+
+  box-shadow:
+    0 5px 20px rgba(0, 0, 0, 0.04);
+}
+
+.input-section h3,
+.language-section h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+
+.input-buttons {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 18px;
+}
+
+
+.big-button {
+  border: 0;
+  border-radius: 16px;
+
+  padding: 30px 20px;
+
+  cursor: pointer;
+
+  font-size: 42px;
+
+  background: #f1f5ff;
+
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+
+.big-button:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+
+.big-button span {
+  display: block;
+
+  font-size: 20px;
+  font-weight: bold;
+
+  margin-top: 10px;
+}
+
+
+.big-button small {
+  display: block;
+
+  margin-top: 7px;
+
+  font-size: 13px;
+
+  color: #667085;
+}
+
+
+/* -------------------------
+   LANGUAGE
+------------------------- */
+
+.language-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 20px;
+}
+
+
+.field label {
+  display: block;
+
+  font-weight: bold;
+
+  margin-bottom: 8px;
+}
+
+
+.field select {
+  width: 100%;
+
+  padding: 14px;
+
+  border:
+    1px solid #d1d5db;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  font-size: 16px;
+
+  outline: none;
+}
+
+
+.field select:focus {
+  border-color: #6366f1;
+}
+
+
+/* -------------------------
+   PROCESSING
+------------------------- */
+
+.processing {
+  text-align: center;
+}
+
+.loader {
+  width: 45px;
+  height: 45px;
+
+  border:
+    5px solid #e5e7eb;
+
+  border-top-color: #4f46e5;
+
+  border-radius: 50%;
+
+  margin: 5px auto 15px;
+
+  animation:
+    spin 0.9s linear infinite;
+}
+
+
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* -------------------------
+   RESULT
+------------------------- */
+
+.result {
+  text-align: center;
+}
+
+.success-icon {
+  font-size: 50px;
+}
+
+.result h3 {
+  margin-bottom: 5px;
+}
+
+.future-features {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 10px;
+
+  margin: 25px 0;
+}
+
+
+.future-features div {
+  background: #f8fafc;
+
+  border-radius: 12px;
+
+  padding: 15px;
+
+  font-size: 25px;
+}
+
+
+.future-features span {
+  display: block;
+
+  font-size: 12px;
+
+  margin-top: 6px;
+}
+
+
+.next-message {
+  color: #667085;
+}
+
+
+/* -------------------------
+   FEATURES
+------------------------- */
+
+.features h2 {
+  text-align: center;
+}
+
+.feature-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 15px;
+}
+
+
+.feature-card {
+  padding: 20px;
+
+  background: #f8fafc;
+
+  border-radius: 14px;
+
+  text-align: center;
+}
+
+
+.feature-card div {
+  font-size: 35px;
+}
+
+
+.feature-card h3 {
+  margin:
+    10px 0 5px;
+}
+
+
+.feature-card p {
+  color: #667085;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+
+/* -------------------------
+   FOOTER
+------------------------- */
+
+footer {
+  text-align: center;
+
+  padding: 30px 15px;
+
+  color: #667085;
+
+  font-size: 13px;
+}
+
+
+/* -------------------------
+   MOBILE
+------------------------- */
+
+@media (max-width: 700px) {
+
+  .hero {
+    padding-top: 30px;
+  }
+
+  .hero h2 {
+    font-size: 24px;
+  }
+
+  .input-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .language-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .future-features {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .input-section,
+  .language-section,
+  .processing,
+  .result,
+  .features {
+    padding: 18px;
+  }
+
+}
