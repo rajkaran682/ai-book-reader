@@ -2,521 +2,904 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <title>AI Book Reader — किताब स्कैन करें और सुनें</title>
 
   <meta
     name="description"
-    content="AI Book Reader - किताब स्कैन करें, PDF अपलोड करें और अपनी पसंद की भाषा में सुनें।"
+    content="AI Book Reader से किताब के पेज स्कैन करें, PDF अपलोड करें और टेक्स्ट को अपनी पसंदीदा भाषा में पढ़ें और सुनें।"
   >
-
-  <title>AI Book Reader</title>
 
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header class="topbar">
+  <!-- ============================= -->
+  <!-- HEADER -->
+  <!-- ============================= -->
 
-  <div class="brand">
-    <div class="brand-icon">📖</div>
+  <header class="topbar">
 
-    <div>
-      <h1>AI Book Reader</h1>
-      <p>Scan • Translate • Listen • Download</p>
-    </div>
-  </div>
-
-</header>
-
-
-<main class="container">
-
-  <section class="hero">
-
-    <div class="hero-icon">
-      📚
+    <div class="logo">
+      📖 AI Book Reader
     </div>
 
-    <h2>
-      किसी भी किताब को अपनी पसंद की भाषा में सुनें
-    </h2>
+    <div class="status">
+      ● AI Reader
+    </div>
 
-    <p>
-      Camera से पेज स्कैन करें या पूरी PDF अपलोड करें।
-      आगे चलकर AI आपके लिए टेक्स्ट पहचानकर,
-      अनुवाद करके और आवाज़ में पढ़कर सुनाएगा।
-    </p>
-
-  </section>
+  </header>
 
 
-  <!-- INPUT OPTIONS -->
+  <!-- ============================= -->
+  <!-- MAIN -->
+  <!-- ============================= -->
 
-  <section class="input-section">
+  <main class="container">
 
-    <h3>किताब कैसे डालना चाहते हैं?</h3>
+    <!-- HERO -->
 
-    <div class="input-buttons">
+    <section class="hero">
 
-      <button
-        class="big-button camera-button"
-        id="cameraBtn"
+      <div class="hero-icon">
+        📚
+      </div>
+
+      <h1>
+        किसी भी किताब को<br>
+        अपनी पसंद की भाषा में सुनें
+      </h1>
+
+      <p>
+        कैमरा से पेज स्कैन करें या पूरी PDF अपलोड करें।
+        AI टेक्स्ट पहचानेगा और आगे उसे आपकी पसंद की भाषा में पढ़ने में मदद करेगा।
+      </p>
+
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- UPLOAD BOX -->
+    <!-- ============================= -->
+
+    <section class="upload-card">
+
+      <h2>किताब जोड़ें</h2>
+
+      <p class="muted">
+        कैमरा से फोटो लें या अपने फोन से PDF/इमेज चुनें।
+      </p>
+
+
+      <div class="upload-buttons">
+
+        <button
+          id="cameraBtn"
+          class="primary-btn"
+          type="button"
+        >
+          📷 Camera से Scan
+        </button>
+
+
+        <button
+          id="pdfBtn"
+          class="secondary-btn"
+          type="button"
+        >
+          📄 PDF / Image Upload
+        </button>
+
+      </div>
+
+
+      <!-- Hidden Camera Input -->
+
+      <input
+        id="cameraInput"
+        type="file"
+        accept="image/*"
+        capture="environment"
+        hidden
       >
-        📷
-        <span>Camera से Scan</span>
-        <small>किताब का पेज फोटो लें</small>
-      </button>
 
 
-      <button
-        class="big-button upload-button"
-        id="uploadBtn"
+      <!-- Hidden File Input -->
+
+      <input
+        id="fileInput"
+        type="file"
+        accept=".pdf,image/jpeg,image/png,image/webp,application/pdf"
+        hidden
       >
-        📄
-        <span>PDF Upload</span>
-        <small>पूरी किताब की PDF डालें</small>
-      </button>
-
-    </div>
 
 
-    <!-- Camera input -->
+      <div
+        id="fileInfo"
+        class="file-info hidden"
+      ></div>
 
-    <input
-      type="file"
-      id="cameraInput"
-      accept="image/*"
-      capture="environment"
-      hidden
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- LANGUAGE SETTINGS -->
+    <!-- ============================= -->
+
+    <section
+      id="languageCard"
+      class="settings-card hidden"
     >
 
+      <h2>🌐 भाषा चुनें</h2>
 
-    <!-- PDF / Image input -->
+      <div class="language-grid">
 
-    <input
-      type="file"
-      id="fileInput"
-      accept=".pdf,image/jpeg,image/png,image/webp"
-      hidden
+        <div class="field">
+
+          <label for="sourceLanguage">
+            किताब की भाषा
+          </label>
+
+          <select id="sourceLanguage">
+
+            <option value="auto">
+              🔍 अपने आप पहचानें
+            </option>
+
+            <option value="hin">
+              🇮🇳 हिन्दी
+            </option>
+
+            <option value="eng">
+              🇬🇧 English
+            </option>
+
+            <option value="ben">
+              বাংলা
+            </option>
+
+            <option value="tam">
+              தமிழ்
+            </option>
+
+            <option value="tel">
+              తెలుగు
+            </option>
+
+            <option value="mar">
+              मराठी
+            </option>
+
+            <option value="guj">
+              ગુજરાતી
+            </option>
+
+            <option value="pan">
+              ਪੰਜਾਬੀ
+            </option>
+
+            <option value="urd">
+              اردو
+            </option>
+
+            <option value="ara">
+              العربية
+            </option>
+
+            <option value="fra">
+              Français
+            </option>
+
+            <option value="deu">
+              Deutsch
+            </option>
+
+            <option value="spa">
+              Español
+            </option>
+
+            <option value="jpn">
+              日本語
+            </option>
+
+            <option value="kor">
+              한국어
+            </option>
+
+            <option value="chi_sim">
+              中文
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="targetLanguage">
+            पढ़ने / सुनने की भाषा
+          </label>
+
+          <select id="targetLanguage">
+
+            <option value="hi">
+              🇮🇳 हिन्दी
+            </option>
+
+            <option value="en">
+              🇬🇧 English
+            </option>
+
+            <option value="bn">
+              বাংলা
+            </option>
+
+            <option value="ta">
+              தமிழ்
+            </option>
+
+            <option value="te">
+              తెలుగు
+            </option>
+
+            <option value="mr">
+              मराठी
+            </option>
+
+            <option value="gu">
+              ગુજરાતી
+            </option>
+
+            <option value="pa">
+              ਪੰਜਾਬੀ
+            </option>
+
+            <option value="ur">
+              اردو
+            </option>
+
+            <option value="ar">
+              العربية
+            </option>
+
+            <option value="fr">
+              Français
+            </option>
+
+            <option value="de">
+              Deutsch
+            </option>
+
+            <option value="es">
+              Español
+            </option>
+
+            <option value="ja">
+              日本語
+            </option>
+
+            <option value="ko">
+              한국어
+            </option>
+
+            <option value="zh">
+              中文
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <button
+        id="ocrBtn"
+        class="process-btn"
+        type="button"
+      >
+        🔎 टेक्स्ट पहचानें
+      </button>
+
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- PROCESSING -->
+    <!-- ============================= -->
+
+    <section
+      id="processing"
+      class="processing-card hidden"
     >
 
-  </section>
+      <div class="loader"></div>
+
+      <h3 id="processingTitle">
+        किताब का टेक्स्ट पढ़ा जा रहा है...
+      </h3>
+
+      <p id="processingText">
+        कृपया इस दौरान पेज बंद न करें।
+      </p>
+
+      <div class="progress-box">
+
+        <div
+          id="progressBar"
+          class="progress-bar"
+        ></div>
+
+      </div>
+
+    </section>
 
 
-  <!-- LANGUAGE -->
+    <!-- ============================= -->
+    <!-- OCR RESULT -->
+    <!-- ============================= -->
 
-  <section class="language-section">
+    <section
+      id="resultCard"
+      class="result-card hidden"
+    >
 
-    <h3>🔊 किस भाषा में सुनना चाहते हैं?</h3>
+      <div class="result-header">
 
-    <div class="language-grid">
+        <div>
 
-      <div class="field">
+          <span class="result-label">
+            OCR RESULT
+          </span>
 
-        <label for="sourceLanguage">
-          किताब की भाषा
-        </label>
+          <h2>
+            📝 पहचाना गया टेक्स्ट
+          </h2>
 
-        <select id="sourceLanguage">
+        </div>
 
-          <option value="auto">
-            🔍 अपने-आप पहचानें
-          </option>
-
-          <option value="hi">
-            हिंदी
-          </option>
-
-          <option value="en">
-            English
-          </option>
-
-          <option value="bn">
-            বাংলা
-          </option>
-
-          <option value="ta">
-            தமிழ்
-          </option>
-
-          <option value="te">
-            తెలుగు
-          </option>
-
-          <option value="mr">
-            मराठी
-          </option>
-
-          <option value="gu">
-            ગુજરાતી
-          </option>
-
-          <option value="pa">
-            ਪੰਜਾਬੀ
-          </option>
-
-          <option value="ur">
-            اردو
-          </option>
-
-          <option value="ar">
-            العربية
-          </option>
-
-          <option value="fr">
-            Français
-          </option>
-
-          <option value="de">
-            Deutsch
-          </option>
-
-          <option value="es">
-            Español
-          </option>
-
-          <option value="ja">
-            日本語
-          </option>
-
-          <option value="ko">
-            한국어
-          </option>
-
-          <option value="zh">
-            中文
-          </option>
-
-        </select>
+        <div
+          id="confidence"
+          class="confidence"
+        ></div>
 
       </div>
 
 
-      <div class="field">
+      <div
+        id="detectedLanguage"
+        class="detected-language"
+      ></div>
 
-        <label for="targetLanguage">
-          सुनने की भाषा
-        </label>
 
-        <select id="targetLanguage">
+      <textarea
+        id="ocrText"
+        class="ocr-text"
+        placeholder="पहचाना गया टेक्स्ट यहां दिखाई देगा..."
+      ></textarea>
 
-          <option value="hi">
-            🇮🇳 हिंदी
-          </option>
 
-          <option value="en">
-            🇬🇧 English
-          </option>
+      <div class="result-actions">
 
-          <option value="bn">
-            বাংলা
-          </option>
+        <button
+          id="copyBtn"
+          class="action-btn"
+          type="button"
+        >
+          📋 Copy
+        </button>
 
-          <option value="ta">
-            தமிழ்
-          </option>
-
-          <option value="te">
-            తెలుగు
-          </option>
-
-          <option value="mr">
-            मराठी
-          </option>
-
-          <option value="gu">
-            ગુજરાતી
-          </option>
-
-          <option value="pa">
-            ਪੰਜਾਬी
-          </option>
-
-          <option value="ur">
-            اردو
-          </option>
-
-          <option value="ar">
-            العربية
-          </option>
-
-          <option value="fr">
-            Français
-          </option>
-
-          <option value="de">
-            Deutsch
-          </option>
-
-          <option value="es">
-            Español
-          </option>
-
-          <option value="ja">
-            日本語
-          </option>
-
-          <option value="ko">
-            한국어
-          </option>
-
-          <option value="zh">
-            中文
-          </option>
-
-        </select>
+        <button
+          id="clearBtn"
+          class="action-btn danger"
+          type="button"
+        >
+          🗑 Clear
+        </button>
 
       </div>
 
-    </div>
-
-  </section>
+    </section>
 
 
-  <!-- PROCESSING -->
+    <!-- ============================= -->
+    <!-- NEXT FEATURES -->
+    <!-- ============================= -->
 
-  <section
-    class="processing"
-    id="processing"
-    hidden
-  >
+    <section class="features">
 
-    <div class="loader"></div>
+      <h2>
+        आगे आने वाले फीचर
+      </h2>
 
-    <h3>फाइल तैयार की जा रही है...</h3>
+      <div class="feature-grid">
 
-    <p id="processingText">
-      कृपया प्रतीक्षा करें।
-    </p>
-
-  </section>
+        <div class="feature">
+          <span>🔍</span>
+          <strong>Smart OCR</strong>
+          <small>किताब के पेज से टेक्स्ट पहचानें</small>
+        </div>
 
 
-  <!-- RESULT -->
+        <div class="feature">
+          <span>🌐</span>
+          <strong>Translation</strong>
+          <small>टेक्स्ट को दूसरी भाषा में बदलें</small>
+        </div>
 
-  <section
-    class="result"
-    id="result"
-    hidden
-  >
 
-    <div class="success-icon">
-      ✅
-    </div>
+        <div class="feature">
+          <span>🔊</span>
+          <strong>AI Voice</strong>
+          <small>किताब को प्राकृतिक आवाज में सुनें</small>
+        </div>
 
-    <h3>फाइल सफलतापूर्वक प्राप्त हो गई</h3>
 
-    <p id="fileName"></p>
+        <div class="feature">
+          <span>🎧</span>
+          <strong>Audio Download</strong>
+          <small>पूरी किताब का Audio बनाएं</small>
+        </div>
 
-    <div class="future-features">
 
-      <div>
-        🔤
-        <span>OCR Text</span>
+        <div class="feature">
+          <span>👆</span>
+          <strong>Reading Pointer</strong>
+          <small>पढ़ते समय शब्द/लाइन पर Pointer</small>
+        </div>
+
+
+        <div class="feature">
+          <span>🎬</span>
+          <strong>Book Video</strong>
+          <small>पेज + आवाज वाला वीडियो बनाएं</small>
+        </div>
+
       </div>
 
-      <div>
-        🌐
-        <span>Translation</span>
-      </div>
+    </section>
 
-      <div>
-        🔊
-        <span>AI Voice</span>
-      </div>
-
-      <div>
-        🎬
-        <span>Video</span>
-      </div>
-
-    </div>
-
-    <p class="next-message">
-      अगला चरण: इस फाइल के अंदर के शब्द पहचानकर
-      उसे चुनी हुई भाषा में पढ़ना।
-    </p>
-
-  </section>
+  </main>
 
 
-  <!-- FUTURE FEATURES -->
+  <!-- ============================= -->
+  <!-- JAVASCRIPT -->
+  <!-- ============================= -->
 
-  <section class="features">
+  <script>
 
-    <h2>आगे आने वाले फीचर</h2>
+    const cameraBtn =
+      document.getElementById("cameraBtn");
 
-    <div class="feature-grid">
+    const pdfBtn =
+      document.getElementById("pdfBtn");
 
-      <div class="feature-card">
-        <div>🔤</div>
-        <h3>AI OCR</h3>
-        <p>किताब के पेज से लिखे हुए शब्द पहचानना।</p>
-      </div>
+    const cameraInput =
+      document.getElementById("cameraInput");
 
-      <div class="feature-card">
-        <div>🌐</div>
-        <h3>Language Translation</h3>
-        <p>किसी भाषा के टेक्स्ट को अपनी पसंद की भाषा में बदलना।</p>
-      </div>
+    const fileInput =
+      document.getElementById("fileInput");
 
-      <div class="feature-card">
-        <div>🔊</div>
-        <h3>Natural Voice</h3>
-        <p>प्राकृतिक आवाज़ में पूरी किताब सुनना।</p>
-      </div>
+    const fileInfo =
+      document.getElementById("fileInfo");
 
-      <div class="feature-card">
-        <div>🎧</div>
-        <h3>Audio Download</h3>
-        <p>पूरी किताब को Audio के रूप में सेव करना।</p>
-      </div>
+    const languageCard =
+      document.getElementById("languageCard");
 
-      <div class="feature-card">
-        <div>🎬</div>
-        <h3>Reading Video</h3>
-        <p>किताब के पेज के साथ आवाज़ वाला वीडियो बनाना।</p>
-      </div>
+    const ocrBtn =
+      document.getElementById("ocrBtn");
 
-      <div class="feature-card">
-        <div>👆</div>
-        <h3>Reading Pointer</h3>
-        <p>वीडियो में पढ़ी जा रही लाइन/शब्द को Highlight करना।</p>
-      </div>
+    const processing =
+      document.getElementById("processing");
 
-    </div>
+    const processingTitle =
+      document.getElementById("processingTitle");
 
-  </section>
+    const processingText =
+      document.getElementById("processingText");
 
-</main>
+    const progressBar =
+      document.getElementById("progressBar");
 
+    const resultCard =
+      document.getElementById("resultCard");
 
-<footer>
+    const ocrText =
+      document.getElementById("ocrText");
 
-  <p>
-    © 2026 AI Book Reader
-  </p>
+    const detectedLanguage =
+      document.getElementById("detectedLanguage");
 
-  <p>
-    Scan • Translate • Listen • Learn
-  </p>
+    const confidence =
+      document.getElementById("confidence");
 
-</footer>
+    const copyBtn =
+      document.getElementById("copyBtn");
+
+    const clearBtn =
+      document.getElementById("clearBtn");
+
+    const sourceLanguage =
+      document.getElementById("sourceLanguage");
 
 
-<script>
-
-const cameraBtn = document.getElementById("cameraBtn");
-const uploadBtn = document.getElementById("uploadBtn");
-
-const cameraInput = document.getElementById("cameraInput");
-const fileInput = document.getElementById("fileInput");
-
-const processing = document.getElementById("processing");
-const processingText = document.getElementById("processingText");
-
-const result = document.getElementById("result");
-const fileName = document.getElementById("fileName");
+    let selectedFile = null;
 
 
-// Camera button
+    // ================================
+    // CAMERA BUTTON
+    // ================================
 
-cameraBtn.addEventListener("click", () => {
-  cameraInput.click();
-});
+    cameraBtn.onclick = () => {
 
+      cameraInput.click();
 
-// PDF Upload button
-
-uploadBtn.addEventListener("click", () => {
-  fileInput.click();
-});
+    };
 
 
-// Camera selected
+    // ================================
+    // PDF / IMAGE BUTTON
+    // ================================
 
-cameraInput.addEventListener("change", () => {
+    pdfBtn.onclick = () => {
 
-  if (cameraInput.files.length > 0) {
-    uploadFile(cameraInput.files[0]);
-  }
+      fileInput.click();
 
-});
-
-
-// PDF selected
-
-fileInput.addEventListener("change", () => {
-
-  if (fileInput.files.length > 0) {
-    uploadFile(fileInput.files[0]);
-  }
-
-});
+    };
 
 
-// Upload function
+    // ================================
+    // CAMERA FILE
+    // ================================
 
-async function uploadFile(file) {
+    cameraInput.onchange = () => {
 
-  processing.hidden = false;
-  result.hidden = true;
+      if (cameraInput.files.length > 0) {
 
-  processingText.textContent =
-    "आपकी फाइल server पर सुरक्षित रूप से भेजी जा रही है...";
+        selectFile(
+          cameraInput.files[0]
+        );
 
-  const formData = new FormData();
+      }
 
-  formData.append("book", file);
-
-
-  try {
-
-    const response = await fetch("/api/upload", {
-      method: "POST",
-      body: formData
-    });
+    };
 
 
-    const data = await response.json();
+    // ================================
+    // NORMAL FILE
+    // ================================
+
+    fileInput.onchange = () => {
+
+      if (fileInput.files.length > 0) {
+
+        selectFile(
+          fileInput.files[0]
+        );
+
+      }
+
+    };
 
 
-    if (!response.ok || !data.ok) {
-      throw new Error(
-        data.message || "Upload failed"
-      );
+    // ================================
+    // SELECT FILE
+    // ================================
+
+    function selectFile(file) {
+
+      selectedFile = file;
+
+      fileInfo.classList.remove("hidden");
+
+      fileInfo.innerHTML = `
+        <strong>📁 ${escapeHtml(file.name)}</strong>
+        <br>
+        <span>${formatSize(file.size)}</span>
+      `;
+
+      languageCard.classList.remove("hidden");
+
+      resultCard.classList.add("hidden");
+
+      window.scrollTo({
+        top: languageCard.offsetTop - 20,
+        behavior: "smooth"
+      });
+
     }
 
 
-    processing.hidden = true;
+    // ================================
+    // OCR BUTTON
+    // ================================
 
-    result.hidden = false;
+    ocrBtn.onclick = async () => {
 
-    fileName.textContent =
-      "फाइल: " + data.file.originalName;
+      if (!selectedFile) {
+
+        alert(
+          "पहले किताब का पेज या image चुनें।"
+        );
+
+        return;
+
+      }
 
 
-  } catch (error) {
+      if (
+        selectedFile.type === "application/pdf"
+      ) {
 
-    processing.hidden = true;
+        alert(
+          "PDF का पूरा OCR अगले चरण में जोड़ा जाएगा। अभी एक image/page से OCR टेस्ट करें।"
+        );
 
-    alert(
-      "फाइल अपलोड नहीं हो सकी।\n\n" +
-      error.message
-    );
+        return;
 
-    console.error(error);
+      }
 
-  }
 
-}
+      await runOCR();
 
-</script>
+    };
+
+
+    // ================================
+    // RUN OCR
+    // ================================
+
+    async function runOCR() {
+
+      processing.classList.remove("hidden");
+
+      resultCard.classList.add("hidden");
+
+      ocrBtn.disabled = true;
+
+      progressBar.style.width = "15%";
+
+      processingTitle.textContent =
+        "AI टेक्स्ट पहचान रहा है...";
+
+      processingText.textContent =
+        "Image को पढ़ा जा रहा है। इसमें कुछ समय लग सकता है।";
+
+
+      const formData =
+        new FormData();
+
+      formData.append(
+        "book",
+        selectedFile
+      );
+
+
+      let language =
+        sourceLanguage.value;
+
+
+      // Auto अभी English fallback
+      if (language === "auto") {
+
+        language = "eng";
+
+      }
+
+
+      formData.append(
+        "language",
+        language
+      );
+
+
+      try {
+
+        progressBar.style.width = "35%";
+
+
+        const response =
+          await fetch(
+            "/api/ocr-image",
+            {
+              method: "POST",
+              body: formData
+            }
+          );
+
+
+        progressBar.style.width = "75%";
+
+
+        const data =
+          await response.json();
+
+
+        if (!response.ok || !data.ok) {
+
+          throw new Error(
+            data.message ||
+            "OCR failed"
+          );
+
+        }
+
+
+        progressBar.style.width = "100%";
+
+
+        setTimeout(() => {
+
+          processing.classList.add("hidden");
+
+          resultCard.classList.remove("hidden");
+
+          ocrText.value =
+            data.text || "";
+
+
+          detectedLanguage.innerHTML =
+            `🌐 OCR भाषा: <strong>${escapeHtml(data.languageName || data.language)}</strong>`;
+
+
+          if (
+            data.confidence !== null &&
+            data.confidence !== undefined
+          ) {
+
+            confidence.textContent =
+              `Confidence: ${Number(data.confidence).toFixed(1)}%`;
+
+          } else {
+
+            confidence.textContent = "";
+
+          }
+
+
+          ocrText.focus();
+
+          resultCard.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+
+          ocrBtn.disabled = false;
+
+        }, 500);
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        processing.classList.add("hidden");
+
+        ocrBtn.disabled = false;
+
+        progressBar.style.width = "0%";
+
+
+        alert(
+          "OCR में समस्या हुई: " +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    // ================================
+    // COPY
+    // ================================
+
+    copyBtn.onclick = async () => {
+
+      const text =
+        ocrText.value.trim();
+
+
+      if (!text) {
+
+        alert(
+          "कॉपी करने के लिए टेक्स्ट नहीं है।"
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        await navigator.clipboard.writeText(
+          text
+        );
+
+        copyBtn.textContent =
+          "✅ Copied";
+
+        setTimeout(() => {
+
+          copyBtn.textContent =
+            "📋 Copy";
+
+        }, 1500);
+
+      } catch {
+
+        ocrText.select();
+
+        document.execCommand("copy");
+
+        alert("Text copied");
+
+      }
+
+    };
+
+
+    // ================================
+    // CLEAR
+    // ================================
+
+    clearBtn.onclick = () => {
+
+      ocrText.value = "";
+
+      detectedLanguage.textContent = "";
+
+      confidence.textContent = "";
+
+    };
+
+
+    // ================================
+    // HELPERS
+    // ================================
+
+    function formatSize(bytes) {
+
+      if (bytes < 1024) {
+
+        return bytes + " B";
+
+      }
+
+      if (bytes < 1024 * 1024) {
+
+        return (
+          (bytes / 1024).toFixed(1) +
+          " KB"
+        );
+
+      }
+
+      return (
+        (bytes / (1024 * 1024)).toFixed(1) +
+        " MB"
+      );
+
+    }
+
+
+    function escapeHtml(value) {
+
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+    }
+
+  </script>
 
 </body>
-    </html>
+        </html>
