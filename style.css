@@ -12,15 +12,14 @@ body {
     Arial,
     "Noto Sans Devanagari",
     sans-serif;
-
   background: #f5f7fb;
   color: #172033;
 }
 
 
-/* ============================= */
-/* TOPBAR */
-/* ============================= */
+/* =========================
+   TOPBAR
+========================= */
 
 .topbar {
   height: 64px;
@@ -30,7 +29,7 @@ body {
   align-items: center;
   justify-content: space-between;
 
-  background: #ffffff;
+  background: #fff;
   border-bottom: 1px solid #e6e9ef;
 
   position: sticky;
@@ -49,19 +48,23 @@ body {
 }
 
 
-/* ============================= */
-/* CONTAINER */
-/* ============================= */
+/* =========================
+   CONTAINER
+========================= */
 
 .container {
-  width: min(100% - 30px, 1000px);
+  width: min(
+    calc(100% - 30px),
+    1000px
+  );
+
   margin: auto;
 }
 
 
-/* ============================= */
-/* HERO */
-/* ============================= */
+/* =========================
+   HERO
+========================= */
 
 .hero {
   text-align: center;
@@ -76,35 +79,36 @@ body {
 .hero h1 {
   margin: 0;
 
-  font-size: clamp(
-    30px,
-    6vw,
-    50px
-  );
+  font-size:
+    clamp(30px, 6vw, 50px);
 
   line-height: 1.15;
 }
 
 .hero p {
-  max-width: 700px;
+  max-width: 720px;
+
   margin: 20px auto 0;
 
   font-size: 17px;
+
   line-height: 1.7;
 
   color: #687386;
 }
 
 
-/* ============================= */
-/* COMMON CARDS */
-/* ============================= */
+/* =========================
+   CARDS
+========================= */
 
 .upload-card,
 .settings-card,
 .processing-card,
-.result-card {
-  background: #ffffff;
+.result-card,
+.translation-card {
+
+  background: #fff;
 
   border: 1px solid #e4e8ef;
 
@@ -115,17 +119,14 @@ body {
   margin-bottom: 22px;
 
   box-shadow:
-    0 8px 30px rgba(
-      25,
-      40,
-      70,
-      0.06
-    );
+    0 8px 30px
+    rgba(25, 40, 70, 0.06);
 }
 
 .upload-card h2,
 .settings-card h2,
-.result-card h2 {
+.result-card h2,
+.translation-card h2 {
   margin-top: 0;
 }
 
@@ -134,11 +135,12 @@ body {
 }
 
 
-/* ============================= */
-/* UPLOAD BUTTONS */
-/* ============================= */
+/* =========================
+   UPLOAD
+========================= */
 
 .upload-buttons {
+
   display: grid;
 
   grid-template-columns:
@@ -157,7 +159,9 @@ button {
 .primary-btn,
 .secondary-btn,
 .process-btn {
+
   border: 0;
+
   border-radius: 14px;
 
   padding: 16px 20px;
@@ -165,13 +169,13 @@ button {
   font-weight: 700;
 
   transition:
-    transform 0.15s,
-    opacity 0.15s;
+    transform .15s,
+    opacity .15s;
 }
 
 .primary-btn {
   background: #1769ff;
-  color: #ffffff;
+  color: #fff;
 }
 
 .secondary-btn {
@@ -182,20 +186,22 @@ button {
 .primary-btn:hover,
 .secondary-btn:hover,
 .process-btn:hover {
-  transform: translateY(-2px);
+  transform:
+    translateY(-2px);
 }
 
 button:disabled {
-  opacity: 0.55;
+  opacity: .55;
   cursor: not-allowed;
 }
 
 
-/* ============================= */
-/* FILE INFO */
-/* ============================= */
+/* =========================
+   FILE INFO
+========================= */
 
 .file-info {
+
   margin-top: 20px;
 
   padding: 15px;
@@ -210,11 +216,12 @@ button:disabled {
 }
 
 
-/* ============================= */
-/* LANGUAGE */
-/* ============================= */
+/* =========================
+   LANGUAGE
+========================= */
 
 .language-grid {
+
   display: grid;
 
   grid-template-columns:
@@ -224,15 +231,18 @@ button:disabled {
 }
 
 .field label {
+
   display: block;
 
   margin-bottom: 8px;
 
   font-size: 14px;
+
   font-weight: 700;
 }
 
 select {
+
   width: 100%;
 
   padding: 14px;
@@ -241,7 +251,7 @@ select {
 
   border-radius: 12px;
 
-  background: #ffffff;
+  background: #fff;
 
   font-size: 15px;
 
@@ -253,24 +263,27 @@ select:focus {
 }
 
 .process-btn {
+
   width: 100%;
 
   margin-top: 22px;
 
   background: #172033;
-  color: #ffffff;
+
+  color: #fff;
 }
 
 
-/* ============================= */
-/* PROCESSING */
-/* ============================= */
+/* =========================
+   PROCESSING
+========================= */
 
 .processing-card {
   text-align: center;
 }
 
 .loader {
+
   width: 45px;
   height: 45px;
 
@@ -283,17 +296,16 @@ select:focus {
   border-radius: 50%;
 
   animation:
-    spin 0.8s linear infinite;
+    spin .8s linear infinite;
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 
-.processing-card h3 {
-  margin-bottom: 8px;
+  to {
+    transform:
+      rotate(360deg);
+  }
+
 }
 
 .processing-card p {
@@ -301,6 +313,7 @@ select:focus {
 }
 
 .progress-box {
+
   height: 9px;
 
   background: #edf0f5;
@@ -313,6 +326,7 @@ select:focus {
 }
 
 .progress-bar {
+
   height: 100%;
 
   width: 0%;
@@ -321,15 +335,18 @@ select:focus {
 
   border-radius: 20px;
 
-  transition: width 0.4s ease;
+  transition:
+    width .4s ease;
 }
 
 
-/* ============================= */
-/* RESULT */
-/* ============================= */
+/* =========================
+   RESULT
+========================= */
 
-.result-header {
+.result-header,
+.translation-header {
+
   display: flex;
 
   align-items: flex-start;
@@ -340,6 +357,7 @@ select:focus {
 }
 
 .result-label {
+
   display: inline-block;
 
   font-size: 11px;
@@ -354,6 +372,7 @@ select:focus {
 }
 
 .confidence {
+
   background: #eef8f2;
 
   color: #168a4b;
@@ -368,6 +387,7 @@ select:focus {
 }
 
 .detected-language {
+
   margin: 12px 0;
 
   padding: 10px 13px;
@@ -379,7 +399,28 @@ select:focus {
   font-size: 14px;
 }
 
+.translation-language {
+
+  padding: 8px 12px;
+
+  border-radius: 20px;
+
+  background: #eef3ff;
+
+  color: #1769ff;
+
+  font-size: 13px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================
+   TEXT BOX
+========================= */
+
 .ocr-text {
+
   width: 100%;
 
   min-height: 300px;
@@ -408,49 +449,79 @@ select:focus {
   border-color: #1769ff;
 }
 
+.translated-text {
+  background: #fbfcff;
+}
+
+
+/* =========================
+   ACTIONS
+========================= */
+
 .result-actions {
+
   display: flex;
 
   gap: 10px;
 
   margin-top: 14px;
+
+  flex-wrap: wrap;
 }
 
-.action-btn {
+.action-btn,
+.translate-btn {
+
   border: 0;
 
   padding: 11px 17px;
 
   border-radius: 10px;
 
-  background: #eef3ff;
-
-  color: #1769ff;
-
   font-weight: 700;
 }
 
+.action-btn {
+
+  background: #eef3ff;
+
+  color: #1769ff;
+}
+
+.translate-btn {
+
+  background: #1769ff;
+
+  color: #fff;
+}
+
 .action-btn.danger {
+
   background: #fff0f0;
+
   color: #c73737;
 }
 
 
-/* ============================= */
-/* FEATURES */
-/* ============================= */
+/* =========================
+   FEATURES
+========================= */
 
 .features {
-  padding: 25px 0 60px;
+
+  padding:
+    25px 0 60px;
 }
 
 .features h2 {
+
   text-align: center;
 
   margin-bottom: 22px;
 }
 
 .feature-grid {
+
   display: grid;
 
   grid-template-columns:
@@ -460,7 +531,8 @@ select:focus {
 }
 
 .feature {
-  background: #ffffff;
+
+  background: #fff;
 
   border: 1px solid #e5e9f0;
 
@@ -472,6 +544,7 @@ select:focus {
 }
 
 .feature span {
+
   display: block;
 
   font-size: 30px;
@@ -480,12 +553,14 @@ select:focus {
 }
 
 .feature strong {
+
   display: block;
 
   margin-bottom: 7px;
 }
 
 .feature small {
+
   display: block;
 
   color: #778196;
@@ -494,18 +569,18 @@ select:focus {
 }
 
 
-/* ============================= */
-/* HIDDEN */
-/* ============================= */
+/* =========================
+   HIDDEN
+========================= */
 
 .hidden {
   display: none !important;
 }
 
 
-/* ============================= */
-/* MOBILE */
-/* ============================= */
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 700px) {
 
@@ -532,7 +607,9 @@ select:focus {
   .upload-card,
   .settings-card,
   .processing-card,
-  .result-card {
+  .result-card,
+  .translation-card {
+
     padding: 20px;
 
     border-radius: 17px;
@@ -562,12 +639,9 @@ select:focus {
     font-size: 12px;
   }
 
-  .result-header {
+  .result-header,
+  .translation-header {
     flex-direction: column;
-  }
-
-  .result-actions {
-    flex-wrap: wrap;
   }
 
 }
@@ -583,4 +657,4 @@ select:focus {
     font-size: 29px;
   }
 
-}
+             }
