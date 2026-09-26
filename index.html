@@ -1,1 +1,522 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="AI Book Reader - किताब स्कैन करें, PDF अपलोड करें और अपनी पसंद की भाषा में सुनें।"
+  >
+
+  <title>AI Book Reader</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <div class="brand">
+    <div class="brand-icon">📖</div>
+
+    <div>
+      <h1>AI Book Reader</h1>
+      <p>Scan • Translate • Listen • Download</p>
+    </div>
+  </div>
+
+</header>
+
+
+<main class="container">
+
+  <section class="hero">
+
+    <div class="hero-icon">
+      📚
+    </div>
+
+    <h2>
+      किसी भी किताब को अपनी पसंद की भाषा में सुनें
+    </h2>
+
+    <p>
+      Camera से पेज स्कैन करें या पूरी PDF अपलोड करें।
+      आगे चलकर AI आपके लिए टेक्स्ट पहचानकर,
+      अनुवाद करके और आवाज़ में पढ़कर सुनाएगा।
+    </p>
+
+  </section>
+
+
+  <!-- INPUT OPTIONS -->
+
+  <section class="input-section">
+
+    <h3>किताब कैसे डालना चाहते हैं?</h3>
+
+    <div class="input-buttons">
+
+      <button
+        class="big-button camera-button"
+        id="cameraBtn"
+      >
+        📷
+        <span>Camera से Scan</span>
+        <small>किताब का पेज फोटो लें</small>
+      </button>
+
+
+      <button
+        class="big-button upload-button"
+        id="uploadBtn"
+      >
+        📄
+        <span>PDF Upload</span>
+        <small>पूरी किताब की PDF डालें</small>
+      </button>
+
+    </div>
+
+
+    <!-- Camera input -->
+
+    <input
+      type="file"
+      id="cameraInput"
+      accept="image/*"
+      capture="environment"
+      hidden
+    >
+
+
+    <!-- PDF / Image input -->
+
+    <input
+      type="file"
+      id="fileInput"
+      accept=".pdf,image/jpeg,image/png,image/webp"
+      hidden
+    >
+
+  </section>
+
+
+  <!-- LANGUAGE -->
+
+  <section class="language-section">
+
+    <h3>🔊 किस भाषा में सुनना चाहते हैं?</h3>
+
+    <div class="language-grid">
+
+      <div class="field">
+
+        <label for="sourceLanguage">
+          किताब की भाषा
+        </label>
+
+        <select id="sourceLanguage">
+
+          <option value="auto">
+            🔍 अपने-आप पहचानें
+          </option>
+
+          <option value="hi">
+            हिंदी
+          </option>
+
+          <option value="en">
+            English
+          </option>
+
+          <option value="bn">
+            বাংলা
+          </option>
+
+          <option value="ta">
+            தமிழ்
+          </option>
+
+          <option value="te">
+            తెలుగు
+          </option>
+
+          <option value="mr">
+            मराठी
+          </option>
+
+          <option value="gu">
+            ગુજરાતી
+          </option>
+
+          <option value="pa">
+            ਪੰਜਾਬੀ
+          </option>
+
+          <option value="ur">
+            اردو
+          </option>
+
+          <option value="ar">
+            العربية
+          </option>
+
+          <option value="fr">
+            Français
+          </option>
+
+          <option value="de">
+            Deutsch
+          </option>
+
+          <option value="es">
+            Español
+          </option>
+
+          <option value="ja">
+            日本語
+          </option>
+
+          <option value="ko">
+            한국어
+          </option>
+
+          <option value="zh">
+            中文
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="field">
+
+        <label for="targetLanguage">
+          सुनने की भाषा
+        </label>
+
+        <select id="targetLanguage">
+
+          <option value="hi">
+            🇮🇳 हिंदी
+          </option>
+
+          <option value="en">
+            🇬🇧 English
+          </option>
+
+          <option value="bn">
+            বাংলা
+          </option>
+
+          <option value="ta">
+            தமிழ்
+          </option>
+
+          <option value="te">
+            తెలుగు
+          </option>
+
+          <option value="mr">
+            मराठी
+          </option>
+
+          <option value="gu">
+            ગુજરાતી
+          </option>
+
+          <option value="pa">
+            ਪੰਜਾਬी
+          </option>
+
+          <option value="ur">
+            اردو
+          </option>
+
+          <option value="ar">
+            العربية
+          </option>
+
+          <option value="fr">
+            Français
+          </option>
+
+          <option value="de">
+            Deutsch
+          </option>
+
+          <option value="es">
+            Español
+          </option>
+
+          <option value="ja">
+            日本語
+          </option>
+
+          <option value="ko">
+            한국어
+          </option>
+
+          <option value="zh">
+            中文
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- PROCESSING -->
+
+  <section
+    class="processing"
+    id="processing"
+    hidden
+  >
+
+    <div class="loader"></div>
+
+    <h3>फाइल तैयार की जा रही है...</h3>
+
+    <p id="processingText">
+      कृपया प्रतीक्षा करें।
+    </p>
+
+  </section>
+
+
+  <!-- RESULT -->
+
+  <section
+    class="result"
+    id="result"
+    hidden
+  >
+
+    <div class="success-icon">
+      ✅
+    </div>
+
+    <h3>फाइल सफलतापूर्वक प्राप्त हो गई</h3>
+
+    <p id="fileName"></p>
+
+    <div class="future-features">
+
+      <div>
+        🔤
+        <span>OCR Text</span>
+      </div>
+
+      <div>
+        🌐
+        <span>Translation</span>
+      </div>
+
+      <div>
+        🔊
+        <span>AI Voice</span>
+      </div>
+
+      <div>
+        🎬
+        <span>Video</span>
+      </div>
+
+    </div>
+
+    <p class="next-message">
+      अगला चरण: इस फाइल के अंदर के शब्द पहचानकर
+      उसे चुनी हुई भाषा में पढ़ना।
+    </p>
+
+  </section>
+
+
+  <!-- FUTURE FEATURES -->
+
+  <section class="features">
+
+    <h2>आगे आने वाले फीचर</h2>
+
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <div>🔤</div>
+        <h3>AI OCR</h3>
+        <p>किताब के पेज से लिखे हुए शब्द पहचानना।</p>
+      </div>
+
+      <div class="feature-card">
+        <div>🌐</div>
+        <h3>Language Translation</h3>
+        <p>किसी भाषा के टेक्स्ट को अपनी पसंद की भाषा में बदलना।</p>
+      </div>
+
+      <div class="feature-card">
+        <div>🔊</div>
+        <h3>Natural Voice</h3>
+        <p>प्राकृतिक आवाज़ में पूरी किताब सुनना।</p>
+      </div>
+
+      <div class="feature-card">
+        <div>🎧</div>
+        <h3>Audio Download</h3>
+        <p>पूरी किताब को Audio के रूप में सेव करना।</p>
+      </div>
+
+      <div class="feature-card">
+        <div>🎬</div>
+        <h3>Reading Video</h3>
+        <p>किताब के पेज के साथ आवाज़ वाला वीडियो बनाना।</p>
+      </div>
+
+      <div class="feature-card">
+        <div>👆</div>
+        <h3>Reading Pointer</h3>
+        <p>वीडियो में पढ़ी जा रही लाइन/शब्द को Highlight करना।</p>
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<footer>
+
+  <p>
+    © 2026 AI Book Reader
+  </p>
+
+  <p>
+    Scan • Translate • Listen • Learn
+  </p>
+
+</footer>
+
+
+<script>
+
+const cameraBtn = document.getElementById("cameraBtn");
+const uploadBtn = document.getElementById("uploadBtn");
+
+const cameraInput = document.getElementById("cameraInput");
+const fileInput = document.getElementById("fileInput");
+
+const processing = document.getElementById("processing");
+const processingText = document.getElementById("processingText");
+
+const result = document.getElementById("result");
+const fileName = document.getElementById("fileName");
+
+
+// Camera button
+
+cameraBtn.addEventListener("click", () => {
+  cameraInput.click();
+});
+
+
+// PDF Upload button
+
+uploadBtn.addEventListener("click", () => {
+  fileInput.click();
+});
+
+
+// Camera selected
+
+cameraInput.addEventListener("change", () => {
+
+  if (cameraInput.files.length > 0) {
+    uploadFile(cameraInput.files[0]);
+  }
+
+});
+
+
+// PDF selected
+
+fileInput.addEventListener("change", () => {
+
+  if (fileInput.files.length > 0) {
+    uploadFile(fileInput.files[0]);
+  }
+
+});
+
+
+// Upload function
+
+async function uploadFile(file) {
+
+  processing.hidden = false;
+  result.hidden = true;
+
+  processingText.textContent =
+    "आपकी फाइल server पर सुरक्षित रूप से भेजी जा रही है...";
+
+  const formData = new FormData();
+
+  formData.append("book", file);
+
+
+  try {
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData
+    });
+
+
+    const data = await response.json();
+
+
+    if (!response.ok || !data.ok) {
+      throw new Error(
+        data.message || "Upload failed"
+      );
+    }
+
+
+    processing.hidden = true;
+
+    result.hidden = false;
+
+    fileName.textContent =
+      "फाइल: " + data.file.originalName;
+
+
+  } catch (error) {
+
+    processing.hidden = true;
+
+    alert(
+      "फाइल अपलोड नहीं हो सकी।\n\n" +
+      error.message
+    );
+
+    console.error(error);
+
+  }
+
+}
+
+</script>
+
+</body>
+    </html>
