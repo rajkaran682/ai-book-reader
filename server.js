@@ -5,20 +5,24 @@ const fs = require("fs");
 
 const app = express();
 
-app.use(express.json({ limit: "5mb" }));
+app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 10000;
 
-// ===============================
-// Upload setup
-// ===============================
+// ==================================================
+// UPLOAD DIRECTORY
+// ==================================================
 
 const uploadDir = path.join(__dirname, "uploads");
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
+
+// ==================================================
+// MULTER STORAGE
+// ==================================================
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -38,6 +42,17 @@ const storage = multer.diskStorage({
   }
 });
 
+// ==================================================
+// FILE FILTER
+// ==================================================
+
+const allowedMimeTypes = [
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+  "image/webp"
+];
+
 const upload = multer({
   storage,
 
@@ -47,14 +62,7 @@ const upload = multer({
 
   fileFilter: (req, file, cb) => {
 
-    const allowed = [
-      "application/pdf",
-      "image/jpeg",
-      "image/png",
-      "image/webp"
-    ];
-
-    if (allowed.includes(file.mimetype)) {
+    if (allowedMimeTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
       cb(
@@ -63,16 +71,20 @@ const upload = multer({
         )
       );
     }
+
   }
 });
 
-// ===============================
+// ==================================================
 // OCR
-// ===============================
+// ==================================================
 
 const Tesseract = require("tesseract.js");
 
+// OCR language list
+
 const OCR_LANGUAGES = {
+
   eng: "English",
   hin: "Hindi",
   ben: "Bengali",
@@ -89,13 +101,15 @@ const OCR_LANGUAGES = {
   jpn: "Japanese",
   kor: "Korean",
   chi_sim: "Chinese"
+
 };
 
-// ===============================
-// Translation languages
-// ===============================
+// ==================================================
+// TRANSLATION LANGUAGES
+// ==================================================
 
 const TRANSLATION_LANGUAGES = {
+
   hi: "Hindi",
   en: "English",
   bn: "Bengali",
@@ -112,192 +126,12 @@ const TRANSLATION_LANGUAGES = {
   ja: "Japanese",
   ko: "Korean",
   zh: "Chinese"
+
 };
 
-// ===============================
-// Health
-// ===============================
-
-app.get("/api/health", (req, res) => {
-
-  res.json({
-    ok: true,
-    service: "AI Book Reader",
-    time: new Date().toISOString()
-  });
-
-});
-
-// ===============================
-// OCR languages
-// ===============================
-
-app.get("/api/languages", (req, res) => {
-  res.json(OCR_LANGUAGES);
-});
-
-// ===============================
-// Translation languages
-// ===============================
-
-app.get("/api/translation-languages", (req, res) => {
-  res.json(TRANSLATION_LANGUAGES);
-});
-
-// ===============================
-// OCR image
-// ===============================
-
-app.post(
-  "/api/ocr-image",
-  upload.single("image"),
-  async (req, res) => {
-
-    if (!req.file) {
-
-      return res.status(400).json({
-        ok: false,
-        message: "इमेज फाइल नहीं मिली।"
-      });
-
-    }
-
-    try {
-
-      let language = req.body.language || "eng";
-
-      if (language === "auto") {
-        language = "eng";
-      }
-
-      if (!OCR_LANGUAGES[language]) {
-        language = "eng";
-      }
-
-      const result = await Tesseract.recognize(
-        req.file.path,
-        language,
-        {
-          logger: info => {
-
-            if (info.status === "recognizing text") {
-
-              console.log(
-                `OCR progress: ${Math.round(
-                  (info.progress || 0) * 100
-                )}%`
-              );
-
-            }
-
-          }
-        }
-      );
-
-      const text = result?.data?.text || "";
-
-      const confidence =
-        typeof result?.data?.confidence === "number"
-          ? Math.round(result.data.confidence)
-          : 0;
-
-      res.json({
-
-        ok: true,
-
-        text,
-
-        confidence,
-
-        language,
-
-        detectedLanguage:
-          OCR_LANGUAGES[language] || language
-
-      });
-
-    } catch (error) {
-
-      console.error("OCR error:", error);
-
-      res.status(500).json({
-
-        ok: false,
-
-        message: "OCR प्रक्रिया में समस्या हुई।",
-
-        error: error.message
-
-      });
-
-    } finally {
-
-      try {
-
-        if (
-          req.file?.path &&
-          fs.existsSync(req.file.path)
-        ) {
-          fs.unlinkSync(req.file.path);
-        }
-
-      } catch (e) {
-
-        console.log(
-          "Temporary file cleanup failed:",
-          e.message
-        );
-
-      }
-
-    }
-
-  }
-);
-
-// ===============================
-// File upload
-// ===============================
-
-app.post(
-  "/api/upload",
-  upload.single("file"),
-  (req, res) => {
-
-    if (!req.file) {
-
-      return res.status(400).json({
-        ok: false,
-        message: "फाइल नहीं मिली।"
-      });
-
-    }
-
-    res.json({
-
-      ok: true,
-
-      filename: req.file.filename,
-
-      originalName: req.file.originalname,
-
-      size: req.file.size,
-
-      type: req.file.mimetype
-
-    });
-
-  }
-);
-
-// ===============================
-// Lingva Translation
-// ===============================
-
-const LINGVA_HOST =
-  "https://lingva.ml";
-
-// Language mapping
+// ==================================================
+// TRANSLATION CODES
+// ==================================================
 
 const TRANSLATION_CODES = {
 
@@ -320,9 +154,327 @@ const TRANSLATION_CODES = {
 
 };
 
-// ===============================
-// Translate function
-// ===============================
+// ==================================================
+// HEALTH CHECK
+// ==================================================
+
+app.get("/api/health", (req, res) => {
+
+  res.json({
+
+    ok: true,
+
+    service: "AI Book Reader",
+
+    time: new Date().toISOString()
+
+  });
+
+});
+
+// ==================================================
+// OCR LANGUAGES API
+// ==================================================
+
+app.get("/api/languages", (req, res) => {
+
+  res.json(OCR_LANGUAGES);
+
+});
+
+// ==================================================
+// TRANSLATION LANGUAGES API
+// ==================================================
+
+app.get("/api/translation-languages", (req, res) => {
+
+  res.json(TRANSLATION_LANGUAGES);
+
+});
+
+// ==================================================
+// OCR IMAGE
+// IMPORTANT:
+// Accept BOTH "image" AND "file"
+// ==================================================
+
+app.post(
+  "/api/ocr-image",
+
+  upload.fields([
+    {
+      name: "image",
+      maxCount: 1
+    },
+
+    {
+      name: "file",
+      maxCount: 1
+    }
+  ]),
+
+  async (req, res) => {
+
+    // ----------------------------------------------
+    // Find uploaded image
+    // ----------------------------------------------
+
+    const ocrFile =
+      req.files?.image?.[0] ||
+      req.files?.file?.[0];
+
+    if (!ocrFile) {
+
+      return res.status(400).json({
+
+        ok: false,
+
+        message:
+          "इमेज फाइल नहीं मिली। Camera या image upload करके फिर प्रयास करें।"
+
+      });
+
+    }
+
+    // ----------------------------------------------
+    // PDF check
+    // ----------------------------------------------
+
+    if (ocrFile.mimetype === "application/pdf") {
+
+      try {
+
+        if (
+          ocrFile.path &&
+          fs.existsSync(ocrFile.path)
+        ) {
+
+          fs.unlinkSync(ocrFile.path);
+
+        }
+
+      } catch (cleanupError) {
+
+        console.log(
+          "PDF cleanup error:",
+          cleanupError.message
+        );
+
+      }
+
+      return res.status(400).json({
+
+        ok: false,
+
+        pdf: true,
+
+        message:
+          "PDF का पूरा page-by-page OCR अगले चरण में जोड़ा जाएगा। अभी image/page से OCR टेस्ट करें।"
+
+      });
+
+    }
+
+    // ----------------------------------------------
+    // OCR
+    // ----------------------------------------------
+
+    try {
+
+      let language =
+        req.body?.language || "eng";
+
+      // Current automatic mode fallback
+      // Real language detection will be added later.
+
+      if (language === "auto") {
+        language = "eng";
+      }
+
+      if (!OCR_LANGUAGES[language]) {
+        language = "eng";
+      }
+
+      console.log(
+        `Starting OCR: ${language}`
+      );
+
+      const result =
+        await Tesseract.recognize(
+
+          ocrFile.path,
+
+          language,
+
+          {
+
+            logger: info => {
+
+              if (
+                info.status ===
+                "recognizing text"
+              ) {
+
+                const progress =
+                  Math.round(
+                    (info.progress || 0) *
+                      100
+                  );
+
+                console.log(
+                  `OCR progress: ${progress}%`
+                );
+
+              }
+
+            }
+
+          }
+
+        );
+
+      const text =
+        result?.data?.text || "";
+
+      const confidence =
+        typeof result?.data?.confidence ===
+        "number"
+
+          ? Math.round(
+              result.data.confidence
+            )
+
+          : 0;
+
+      console.log(
+        `OCR complete. Confidence: ${confidence}%`
+      );
+
+      return res.json({
+
+        ok: true,
+
+        text,
+
+        confidence,
+
+        language,
+
+        detectedLanguage:
+          OCR_LANGUAGES[language] ||
+          language
+
+      });
+
+    } catch (error) {
+
+      console.error(
+        "OCR error:",
+        error
+      );
+
+      return res.status(500).json({
+
+        ok: false,
+
+        message:
+          "OCR में समस्या हुई।",
+
+        error:
+          error.message
+
+      });
+
+    } finally {
+
+      // --------------------------------------------
+      // Delete temporary image
+      // --------------------------------------------
+
+      try {
+
+        if (
+          ocrFile?.path &&
+          fs.existsSync(
+            ocrFile.path
+          )
+        ) {
+
+          fs.unlinkSync(
+            ocrFile.path
+          );
+
+        }
+
+      } catch (cleanupError) {
+
+        console.log(
+          "Temporary file cleanup failed:",
+          cleanupError.message
+        );
+
+      }
+
+    }
+
+  }
+);
+
+// ==================================================
+// GENERAL FILE UPLOAD
+// ==================================================
+
+app.post(
+  "/api/upload",
+
+  upload.single("file"),
+
+  (req, res) => {
+
+    if (!req.file) {
+
+      return res.status(400).json({
+
+        ok: false,
+
+        message:
+          "फाइल नहीं मिली।"
+
+      });
+
+    }
+
+    res.json({
+
+      ok: true,
+
+      filename:
+        req.file.filename,
+
+      originalName:
+        req.file.originalname,
+
+      size:
+        req.file.size,
+
+      type:
+        req.file.mimetype
+
+    });
+
+  }
+);
+
+// ==================================================
+// LINGVA TRANSLATION
+// ==================================================
+
+const LINGVA_HOST =
+  "https://lingva.ml";
+
+// ==================================================
+// TRANSLATION FUNCTION
+// ==================================================
 
 async function translateWithLingva(
   text,
@@ -364,22 +516,28 @@ async function translateWithLingva(
     `${encodedText}`;
 
   console.log(
-    "Translation request:",
-    sourceCode,
-    "→",
-    targetCode
+    `Translation request: ${sourceCode} → ${targetCode}`
   );
 
   const response =
-    await fetch(url, {
+    await fetch(
 
-      method: "GET",
+      url,
 
-      headers: {
-        "Accept": "application/json"
+      {
+
+        method: "GET",
+
+        headers: {
+
+          Accept:
+            "application/json"
+
+        }
+
       }
 
-    });
+    );
 
   const data =
     await response.json().catch(
@@ -389,8 +547,11 @@ async function translateWithLingva(
   if (!response.ok) {
 
     throw new Error(
+
       data?.error ||
+
       `Translation server error: ${response.status}`
+
     );
 
   }
@@ -415,30 +576,37 @@ async function translateWithLingva(
 
 }
 
-// ===============================
-// Translation endpoint
-// ===============================
+// ==================================================
+// TRANSLATION API
+// ==================================================
 
 app.post(
   "/api/translate",
+
   async (req, res) => {
 
     try {
 
       const text =
         String(
-          req.body.text || ""
+          req.body?.text || ""
         ).trim();
 
       const source =
         String(
-          req.body.source || "auto"
+          req.body?.source ||
+          "auto"
         );
 
       const target =
         String(
-          req.body.target || "hi"
+          req.body?.target ||
+          "hi"
         );
+
+      // --------------------------------------------
+      // Validate text
+      // --------------------------------------------
 
       if (!text) {
 
@@ -453,7 +621,13 @@ app.post(
 
       }
 
-      if (!TRANSLATION_LANGUAGES[target]) {
+      // --------------------------------------------
+      // Validate target
+      // --------------------------------------------
+
+      if (
+        !TRANSLATION_LANGUAGES[target]
+      ) {
 
         return res.status(400).json({
 
@@ -466,13 +640,19 @@ app.post(
 
       }
 
+      // --------------------------------------------
       // Same language
+      // --------------------------------------------
 
       if (
+
         source !== "auto" &&
+
         TRANSLATION_CODES[source] &&
+
         TRANSLATION_CODES[source] ===
           TRANSLATION_CODES[target]
+
       ) {
 
         return res.json({
@@ -491,14 +671,26 @@ app.post(
 
       }
 
+      // --------------------------------------------
+      // Translate
+      // --------------------------------------------
+
       const translatedText =
         await translateWithLingva(
+
           text,
+
           source,
+
           target
+
         );
 
-      res.json({
+      // --------------------------------------------
+      // Response
+      // --------------------------------------------
+
+      return res.json({
 
         ok: true,
 
@@ -508,7 +700,8 @@ app.post(
 
         target,
 
-        provider: "Lingva Translate"
+        provider:
+          "Lingva Translate"
 
       });
 
@@ -519,7 +712,7 @@ app.post(
         error
       );
 
-      res.status(503).json({
+      return res.status(503).json({
 
         ok: false,
 
@@ -536,17 +729,17 @@ app.post(
   }
 );
 
-// ===============================
-// Static files
-// ===============================
+// ==================================================
+// STATIC WEBSITE
+// ==================================================
 
 app.use(
   express.static(__dirname)
 );
 
-// ===============================
-// Error handler
-// ===============================
+// ==================================================
+// ERROR HANDLER
+// ==================================================
 
 app.use(
   (error, req, res, next) => {
@@ -569,12 +762,13 @@ app.use(
   }
 );
 
-// ===============================
-// Start server
-// ===============================
+// ==================================================
+// START SERVER
+// ==================================================
 
 app.listen(
   PORT,
+
   () => {
 
     console.log(
