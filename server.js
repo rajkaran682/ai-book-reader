@@ -27,6 +27,7 @@ const storage = multer.diskStorage({
 
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
+
     const name =
       Date.now() +
       "-" +
@@ -39,11 +40,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
+
   limits: {
     fileSize: 100 * 1024 * 1024
   },
 
   fileFilter: (req, file, cb) => {
+
     const allowed = [
       "application/pdf",
       "image/jpeg",
@@ -54,7 +57,11 @@ const upload = multer({
     if (allowed.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("केवल PDF, JPG, PNG और WEBP फाइल स्वीकार की जाती है।"));
+      cb(
+        new Error(
+          "केवल PDF, JPG, PNG और WEBP फाइल स्वीकार की जाती है।"
+        )
+      );
     }
   }
 });
@@ -112,11 +119,13 @@ const TRANSLATION_LANGUAGES = {
 // ===============================
 
 app.get("/api/health", (req, res) => {
+
   res.json({
     ok: true,
     service: "AI Book Reader",
     time: new Date().toISOString()
   });
+
 });
 
 // ===============================
@@ -139,101 +148,159 @@ app.get("/api/translation-languages", (req, res) => {
 // OCR image
 // ===============================
 
-app.post("/api/ocr-image", upload.single("image"), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({
-      ok: false,
-      message: "इमेज फाइल नहीं मिली।"
-    });
-  }
+app.post(
+  "/api/ocr-image",
+  upload.single("image"),
+  async (req, res) => {
 
-  try {
-    let language = req.body.language || "eng";
+    if (!req.file) {
 
-    if (language === "auto") {
-      language = "eng";
+      return res.status(400).json({
+        ok: false,
+        message: "इमेज फाइल नहीं मिली।"
+      });
+
     }
 
-    if (!OCR_LANGUAGES[language]) {
-      language = "eng";
-    }
+    try {
 
-    const result = await Tesseract.recognize(
-      req.file.path,
-      language,
-      {
-        logger: info => {
-          if (info.status === "recognizing text") {
-            console.log(
-              `OCR progress: ${Math.round((info.progress || 0) * 100)}%`
-            );
+      let language = req.body.language || "eng";
+
+      if (language === "auto") {
+        language = "eng";
+      }
+
+      if (!OCR_LANGUAGES[language]) {
+        language = "eng";
+      }
+
+      const result = await Tesseract.recognize(
+        req.file.path,
+        language,
+        {
+          logger: info => {
+
+            if (info.status === "recognizing text") {
+
+              console.log(
+                `OCR progress: ${Math.round(
+                  (info.progress || 0) * 100
+                )}%`
+              );
+
+            }
+
           }
         }
+      );
+
+      const text = result?.data?.text || "";
+
+      const confidence =
+        typeof result?.data?.confidence === "number"
+          ? Math.round(result.data.confidence)
+          : 0;
+
+      res.json({
+
+        ok: true,
+
+        text,
+
+        confidence,
+
+        language,
+
+        detectedLanguage:
+          OCR_LANGUAGES[language] || language
+
+      });
+
+    } catch (error) {
+
+      console.error("OCR error:", error);
+
+      res.status(500).json({
+
+        ok: false,
+
+        message: "OCR प्रक्रिया में समस्या हुई।",
+
+        error: error.message
+
+      });
+
+    } finally {
+
+      try {
+
+        if (
+          req.file?.path &&
+          fs.existsSync(req.file.path)
+        ) {
+          fs.unlinkSync(req.file.path);
+        }
+
+      } catch (e) {
+
+        console.log(
+          "Temporary file cleanup failed:",
+          e.message
+        );
+
       }
-    );
 
-    const text = result?.data?.text || "";
-
-    const confidence =
-      typeof result?.data?.confidence === "number"
-        ? Math.round(result.data.confidence)
-        : 0;
-
-    res.json({
-      ok: true,
-      text,
-      confidence,
-      language,
-      detectedLanguage: OCR_LANGUAGES[language] || language
-    });
-
-  } catch (error) {
-    console.error("OCR error:", error);
-
-    res.status(500).json({
-      ok: false,
-      message: "OCR प्रक्रिया में समस्या हुई।",
-      error: error.message
-    });
-
-  } finally {
-    try {
-      if (req.file?.path && fs.existsSync(req.file.path)) {
-        fs.unlinkSync(req.file.path);
-      }
-    } catch (e) {
-      console.log("Temporary file cleanup failed:", e.message);
     }
+
   }
-});
+);
 
 // ===============================
 // File upload
 // ===============================
 
-app.post("/api/upload", upload.single("file"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({
-      ok: false,
-      message: "फाइल नहीं मिली।"
+app.post(
+  "/api/upload",
+  upload.single("file"),
+  (req, res) => {
+
+    if (!req.file) {
+
+      return res.status(400).json({
+        ok: false,
+        message: "फाइल नहीं मिली।"
+      });
+
+    }
+
+    res.json({
+
+      ok: true,
+
+      filename: req.file.filename,
+
+      originalName: req.file.originalname,
+
+      size: req.file.size,
+
+      type: req.file.mimetype
+
     });
+
   }
-
-  res.json({
-    ok: true,
-    filename: req.file.filename,
-    originalName: req.file.originalname,
-    size: req.file.size,
-    type: req.file.mimetype
-  });
-});
+);
 
 // ===============================
-// Translation
+// Lingva Translation
 // ===============================
+
+const LINGVA_HOST =
+  "https://lingva.ml";
 
 // Language mapping
+
 const TRANSLATION_CODES = {
+
   hi: "hi",
   en: "en",
   bn: "bn",
@@ -250,182 +317,269 @@ const TRANSLATION_CODES = {
   ja: "ja",
   ko: "ko",
   zh: "zh"
+
 };
 
-// Translate using Lingua API
-async function translateWithLingua(text, source, target) {
+// ===============================
+// Translate function
+// ===============================
 
-  const apiKey = process.env.LINGUA_API_KEY;
+async function translateWithLingva(
+  text,
+  source,
+  target
+) {
 
-  if (!apiKey) {
-    throw new Error(
-      "LINGUA_API_KEY अभी Render Environment में सेट नहीं है।"
-    );
-  }
-
-  const targetCode = TRANSLATION_CODES[target];
+  const targetCode =
+    TRANSLATION_CODES[target];
 
   if (!targetCode) {
-    throw new Error("यह target language अभी supported नहीं है।");
-  }
-
-  const body = {
-    text: text,
-    target_lang: targetCode
-  };
-
-  if (source && source !== "auto") {
-    const sourceCode = TRANSLATION_CODES[source];
-
-    if (sourceCode) {
-      body.source_lang = sourceCode;
-    }
-  }
-
-  const response = await fetch(
-    "https://lingua-api.com/v1/translate",
-    {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      },
-
-      body: JSON.stringify(body)
-    }
-  );
-
-  const data = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    console.error("Lingua API error:", data);
 
     throw new Error(
-      data?.message ||
-      data?.error ||
-      `Translation API error: ${response.status}`
+      "Target language supported नहीं है।"
     );
+
   }
 
-  return data;
+  let sourceCode = "auto";
+
+  if (
+    source &&
+    source !== "auto" &&
+    TRANSLATION_CODES[source]
+  ) {
+
+    sourceCode =
+      TRANSLATION_CODES[source];
+
+  }
+
+  const encodedText =
+    encodeURIComponent(text);
+
+  const url =
+    `${LINGVA_HOST}/api/v1/` +
+    `${sourceCode}/` +
+    `${targetCode}/` +
+    `${encodedText}`;
+
+  console.log(
+    "Translation request:",
+    sourceCode,
+    "→",
+    targetCode
+  );
+
+  const response =
+    await fetch(url, {
+
+      method: "GET",
+
+      headers: {
+        "Accept": "application/json"
+      }
+
+    });
+
+  const data =
+    await response.json().catch(
+      () => ({})
+    );
+
+  if (!response.ok) {
+
+    throw new Error(
+      data?.error ||
+      `Translation server error: ${response.status}`
+    );
+
+  }
+
+  if (data?.error) {
+
+    throw new Error(
+      data.error
+    );
+
+  }
+
+  if (!data?.translation) {
+
+    throw new Error(
+      "Translation server ने translated text नहीं भेजा।"
+    );
+
+  }
+
+  return data.translation;
+
 }
 
 // ===============================
 // Translation endpoint
 // ===============================
 
-app.post("/api/translate", async (req, res) => {
+app.post(
+  "/api/translate",
+  async (req, res) => {
 
-  try {
+    try {
 
-    const text = String(req.body.text || "").trim();
-    const source = String(req.body.source || "auto");
-    const target = String(req.body.target || "hi");
+      const text =
+        String(
+          req.body.text || ""
+        ).trim();
 
-    if (!text) {
-      return res.status(400).json({
-        ok: false,
-        message: "Translate करने के लिए text जरूरी है।"
-      });
-    }
+      const source =
+        String(
+          req.body.source || "auto"
+        );
 
-    if (!TRANSLATION_LANGUAGES[target]) {
-      return res.status(400).json({
-        ok: false,
-        message: "Target language supported नहीं है।"
-      });
-    }
+      const target =
+        String(
+          req.body.target || "hi"
+        );
 
-    if (
-      source !== "auto" &&
-      TRANSLATION_CODES[source] &&
-      TRANSLATION_CODES[source] === TRANSLATION_CODES[target]
-    ) {
-      return res.json({
+      if (!text) {
+
+        return res.status(400).json({
+
+          ok: false,
+
+          message:
+            "Translate करने के लिए text जरूरी है।"
+
+        });
+
+      }
+
+      if (!TRANSLATION_LANGUAGES[target]) {
+
+        return res.status(400).json({
+
+          ok: false,
+
+          message:
+            "Target language supported नहीं है।"
+
+        });
+
+      }
+
+      // Same language
+
+      if (
+        source !== "auto" &&
+        TRANSLATION_CODES[source] &&
+        TRANSLATION_CODES[source] ===
+          TRANSLATION_CODES[target]
+      ) {
+
+        return res.json({
+
+          ok: true,
+
+          translatedText: text,
+
+          source,
+
+          target,
+
+          provider: "local"
+
+        });
+
+      }
+
+      const translatedText =
+        await translateWithLingva(
+          text,
+          source,
+          target
+        );
+
+      res.json({
+
         ok: true,
-        translatedText: text,
-        source: source,
-        target: target,
-        provider: "local"
+
+        translatedText,
+
+        source,
+
+        target,
+
+        provider: "Lingva Translate"
+
       });
-    }
 
-    const result = await translateWithLingua(
-      text,
-      source,
-      target
-    );
+    } catch (error) {
 
-    // API response को flexible रखा गया है
-    // ताकि provider response में थोड़ा बदलाव होने पर भी
-    // हमारा app काम कर सके।
-
-    const translatedText =
-      result?.translated_text ||
-      result?.translatedText ||
-      result?.translation ||
-      result?.text ||
-      "";
-
-    if (!translatedText) {
-      throw new Error(
-        "Translation API ने translated text नहीं भेजा।"
+      console.error(
+        "Translation error:",
+        error
       );
+
+      res.status(503).json({
+
+        ok: false,
+
+        message:
+          "Translation service अभी उपलब्ध नहीं है।",
+
+        error:
+          error.message
+
+      });
+
     }
-
-    res.json({
-      ok: true,
-      translatedText,
-      source,
-      target,
-      provider: "lingua"
-    });
-
-  } catch (error) {
-
-    console.error("Translation error:", error);
-
-    res.status(503).json({
-      ok: false,
-      message:
-        "Translation अभी उपलब्ध नहीं है। API key या translation service की जाँच करें।",
-      error: error.message
-    });
 
   }
-});
+);
 
 // ===============================
 // Static files
 // ===============================
 
-app.use(express.static(__dirname));
+app.use(
+  express.static(__dirname)
+);
 
 // ===============================
 // Error handler
 // ===============================
 
-app.use((error, req, res, next) => {
+app.use(
+  (error, req, res, next) => {
 
-  console.error("Server error:", error);
+    console.error(
+      "Server error:",
+      error
+    );
 
-  res.status(500).json({
-    ok: false,
-    message:
-      error.message || "Server में एक error हुआ।"
-  });
+    res.status(500).json({
 
-});
+      ok: false,
+
+      message:
+        error.message ||
+        "Server में एक error हुआ।"
+
+    });
+
+  }
+);
 
 // ===============================
 // Start server
 // ===============================
 
-app.listen(PORT, () => {
+app.listen(
+  PORT,
+  () => {
 
-  console.log(
-    `AI Book Reader running on port ${PORT}`
-  );
+    console.log(
+      `AI Book Reader running on port ${PORT}`
+    );
 
-});
+  }
+);
